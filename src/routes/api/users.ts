@@ -1,7 +1,8 @@
 import express, { Application, Request, Response, Router } from 'express';
+import { v4 as uuidv4 } from 'uuid';
 
 import { mockUsers } from '../../mock-users';
-import { User } from '../../entities/User';
+import { User } from '../../models/User.model';
 import { joiSchema, validateSchemaMiddleware } from '../../utils/validation';
 
 const app: Application = express();
@@ -23,7 +24,6 @@ router.get('/', (req: Request, res: Response) => {
 // @route    GET api/users/auto-suggest?limit=${number}&loginSubstring=${string}
 // @desc     GET auto suggested users
 router.get(('/auto-suggest'), (req: Request, res: Response) => {
-    console.log('here')
     const loginSubstring = String(req.query.loginSubstring);
     const limit = Number(req.query.limit);
     const users: User[] = app.get(USERS).filter(
@@ -70,18 +70,16 @@ router.route('/:id')
 
 // @route    POST api/users/:id
 // @desc     Create a user
-router.post(':/id', validateSchemaMiddleware(joiSchema), (req: Request, res: Response) => {
-    const newUser: User = req.body;
+router.post('/', validateSchemaMiddleware(joiSchema), (req: Request, res: Response) => {
+    const newUser: User =
+    {
+        id: uuidv4(),
+        ...req.body
+    };
     const existingUser: User = app.get(USERS).find(
-        (user: User) => user.id === req.params.id
+        (user: User) => user.login === newUser.login
     );
-    if (req.params.id !== newUser.id) {
-        res
-            .status(400)
-            .json({
-                message: `Invalid user ID`
-            });
-    } else if (existingUser) {
+    if (existingUser) {
         res
             .status(400)
             .json({
@@ -100,7 +98,7 @@ router.post(':/id', validateSchemaMiddleware(joiSchema), (req: Request, res: Res
 
 // @route    PUT api/users/:id
 // @desc     Update a user
-router.put(':/id', validateSchemaMiddleware(joiSchema), (req: Request, res: Response) => {
+router.put('/:id', validateSchemaMiddleware(joiSchema), (req: Request, res: Response) => {
     const userToUpdate: User = req.body;
     const existingUser: User = app.get(USERS).find(
         (user: User) => user.id === req.params.id
@@ -138,7 +136,7 @@ router.put(':/id', validateSchemaMiddleware(joiSchema), (req: Request, res: Resp
 
 // @route    DELETE api/users/:id
 // @desc     Delete a user
-router.delete(':/id', (req: Request, res: Response) => {
+router.delete('/:id', (req: Request, res: Response) => {
     const existingUser: User = app.get(USERS).find(
         (user: User) => user.id === req.params.id
     );
@@ -162,7 +160,7 @@ router.delete(':/id', (req: Request, res: Response) => {
         res
             .status(200)
             .json({
-                message: `User with was succesfully deleted`
+                message: `User was succesfully deleted`
             });
     }
 });
