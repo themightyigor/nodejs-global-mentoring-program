@@ -1,10 +1,9 @@
 import express, { Application, Request, Response, Router } from 'express';
-import { v4 as uuidv4 } from 'uuid';
 
-import { joiSchema, validateSchemaMiddleware } from './middlewares/validation.middleware';
-import { User } from '../models/User.model';
-import { User as UserModel } from '../models/User.model';
+import { validateSchemaMiddleware } from './middlewares/validation.middleware';
+import { UserModel } from '../models/User.model';
 import { UsersService } from '../services/users.service';
+import { userValidator } from './middlewares/validators/user.validator';
 
 const router: Router = express.Router();
 
@@ -79,7 +78,7 @@ export const usersRouter = (app: Application,
 
     // @route    POST api/users/:id
     // @desc     Create a user
-    router.post('/', validateSchemaMiddleware(joiSchema), async (req: Request, res: Response) => {
+    router.post('/', validateSchemaMiddleware(userValidator), async (req: Request, res: Response) => {
         const newUser: UserModel = req.body;
         try {
             const addedUserId = await usersService.createUser(newUser);
@@ -99,7 +98,7 @@ export const usersRouter = (app: Application,
 
     // @route    PUT api/users/:id
     // @desc     Update a user
-    router.put('/:id', validateSchemaMiddleware(joiSchema), async (req: Request, res: Response) => {
+    router.put('/:id', validateSchemaMiddleware(userValidator), async (req: Request, res: Response) => {
         const userToUpdate: UserModel = req.body;
         try {
             const updatedUserId: string = await usersService.updateUser(userToUpdate);

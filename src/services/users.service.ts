@@ -1,4 +1,4 @@
-import { User as UserModel } from "../models/User.model";
+import { UserModel } from "../models/User.model";
 import { UsersRepository } from "../data-access/users.repository";
 
 export class UsersService {
