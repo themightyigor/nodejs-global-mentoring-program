@@ -1,6 +1,7 @@
 import { WhereOptions } from "sequelize/types";
 import { Group } from "./database.initiator";
 import { GroupModel } from "../models/Group.model";
+import { NotFoundError } from "../errors/not-found.error";
 
 export class GroupsRepository {
   private groupsTable: typeof Group;
@@ -13,7 +14,7 @@ export class GroupsRepository {
     try {
       const groups: Group[] = await this.groupsTable.findAll();
       return groups;
-    } catch(error) {
+    } catch (error) {
       throw error;
     }
   }
@@ -26,7 +27,7 @@ export class GroupsRepository {
         permissions: group.permissions,
       });
       return newGroup.id;
-    } catch(error) {
+    } catch (error) {
       throw error;
     }
   }
@@ -34,7 +35,7 @@ export class GroupsRepository {
   public async updateGroup(group: GroupModel): Promise<string> {
     try {
       const { name, permissions } = group;
-      
+
       const groupToUpdate: Group = await this.findGroupById(group.id);
 
       groupToUpdate.name = name;
@@ -42,7 +43,7 @@ export class GroupsRepository {
 
       groupToUpdate.save();
       return groupToUpdate.id;
-    } catch(error) {
+    } catch (error) {
       throw error;
     }
   }
@@ -52,7 +53,7 @@ export class GroupsRepository {
       const groupToDelete: Group = await this.findGroupById(groupId);
       await groupToDelete.destroy();
       return groupToDelete.id;
-    } catch(error) {
+    } catch (error) {
       throw error;
     }
   }
@@ -67,9 +68,9 @@ export class GroupsRepository {
       if (group !== null) {
         return group;
       } else {
-        throw new Error(`The group with id ${id} wasn't found`);
+        throw new NotFoundError(`group with id ${id} wasn't found :c`);
       }
-    } catch(error) {
+    } catch (error) {
       throw error;
     }
   }

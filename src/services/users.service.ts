@@ -1,5 +1,6 @@
 import { UserModel } from "../models/User.model";
 import { UsersRepository } from "../data-access/users.repository";
+import { NotFoundError } from "../errors/not-found.error";
 
 export class UsersService {
     private usersRepository: UsersRepository;
@@ -60,7 +61,7 @@ export class UsersService {
         );
 
         if (suitedUsers.length === 0) {
-            return null;
+            throw new NotFoundError('There are no users from auto-suggest');
         } else if (suitedUsers.length > limit) {
             const limitedSuitedUsers = suitedUsers.slice(0, limit);
             return limitedSuitedUsers;
