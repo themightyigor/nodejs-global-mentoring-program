@@ -1,5 +1,5 @@
 import { User } from "./database.initiator";
-import { User as UserModel } from "../models/User.model";
+import { UserModel } from "../models/User.model";
 import { WhereOptions } from "sequelize/types";
 
 export class UsersRepository {
