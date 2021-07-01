@@ -8,4 +8,5 @@ export default {
     username: process.env.USERNAME,
     password: process.env.PASSWORD,
     database: process.env.DATABASE,
+    jwtSecret: process.env.JWT_SECRET,
 }

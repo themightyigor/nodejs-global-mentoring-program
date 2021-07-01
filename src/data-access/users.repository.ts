@@ -80,4 +80,23 @@ export class UsersRepository {
         }
     }
 
+    public async authenticate(login: string, password: string): Promise<User> {
+        try {
+          const user: User | null = await this.usersTable.findOne({
+            where: {
+              login,
+            } as WhereOptions,
+          });
+          if (user === null) {
+            throw new NotFoundError(`User with login ${login} wasn't found`);
+          } else if (user.password !== password) {
+            throw new NotFoundError(`Wrong password`);
+          } else {
+            return user;
+          }    
+        } catch(error) {
+          throw error;
+        }
+      }    
+
 }

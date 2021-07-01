@@ -23,6 +23,20 @@ export const usersRouter = (app: Application,
             });
     }));
 
+    // @route    GET api/users/logiin
+    // @desc     GET user's JWT Token
+
+    router.get('/login', validateSchemaMiddleware(userValidator), wrapAsync(async (req: Request, res: Response) => {
+        const login: string = req.body.login;
+        const password: string = req.body.password;
+        const token: string = await usersService.authenticate(login, password);
+        res
+            .status(200)
+            .json({
+                token,
+            });
+    }));
+
     // @route    GET api/users/auto-suggest?limit=${number}&loginSubstring=${string}
     // @desc     GET auto suggested users
     router.get(('/auto-suggest'), wrapAsync(async (req: Request, res: Response) => {
