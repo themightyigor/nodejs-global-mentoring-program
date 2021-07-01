@@ -5,6 +5,7 @@ import { GroupModel, Permission } from '../models/Group.model';
 import { mockUsers } from './mock-users';
 import { UserModel } from '../models/User.model';
 import { UserGroupModel } from '../models/UserGroup.model';
+import { errorLogger } from '../loggers/error.logger';
 
 const DATABASE_CONFIG: Options = {
   host: config.host,
@@ -26,8 +27,7 @@ export const sequelize: Sequelize = new Sequelize(DATABASE_CONFIG);
 
 sequelize.authenticate()
   .then(() => console.log('Connected successfully'))
-  .catch((error: Error) => console.error(console.error('Unable to connect to the database:', error)
-  ));
+  .catch((error: Error) => errorLogger.error(error));
 
 export class User extends Model implements UserModel {
   public id!: string;
@@ -140,7 +140,7 @@ const userModelSync = User.sync({ force: true })
           isDeleted: user.isDeleted,
         })
           .then((user: UserModel) => console.log(`${user.login} was successfully added to the users database`))
-          .catch((error: Error) => console.error(error.message));
+          .catch((error: Error) => errorLogger.error(error));
       })
     })(mockUsers);
   });
@@ -155,5 +155,5 @@ Promise.all([userModelSync, groupModelSync]).then(() => {
       User.belongsToMany(Group, { through: UserGroup });
       Group.belongsToMany(User, { through: UserGroup });
     })
-    .catch((error: Error) => console.error(error.message));
+    .catch((error: Error) => errorLogger.error(error));
 });

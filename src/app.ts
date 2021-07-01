@@ -10,12 +10,17 @@ import { groupsRouter } from './controllers/groups.controller';
 import { userGroupRouter } from './controllers/user-group.controller';
 import { UserGroupService } from './services/user-group.service';
 import { UserGroupRepository } from './data-access/user-group.repository';
+import { requestInfoMiddleware } from './controllers/middlewares/request-info.middleware';
+import { unhandledErrorsMiddleware } from './controllers/middlewares/unhandled-errors.middleware';
+import { errorsHandlerMiddleware } from './controllers/middlewares/error-handler.middleware';
+import { errorLogger } from './loggers/error.logger';
 
 const app: Application = express();
 
 app.listen(1337);
 
 app.use(express.json());
+app.use(requestInfoMiddleware);
 
 const usersRepository = new UsersRepository(User);
 const usersService = new UsersService(usersRepository);
@@ -32,3 +37,14 @@ userGroupRouter(app, userGroupService);
 
 usersRouter(app, usersService);
 
+app.use(errorsHandlerMiddleware);
+
+app.use(unhandledErrorsMiddleware);
+
+process
+  .on('unhandledRejection', (error: Error) => {
+    errorLogger.error(error);
+  })
+  .on('uncaughtException', (error: Error) => {
+    errorLogger.error(error);
+  });

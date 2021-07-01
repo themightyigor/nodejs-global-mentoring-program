@@ -8,7 +8,7 @@ export class GroupsService {
     this.groupsRepository = groupsRepository;
   }
 
-  public async getGroupbase(): Promise<GroupModel[]> {
+  public async getGroups(): Promise<GroupModel[]> {
     try {
       const groupbase: GroupModel[] = await this.groupsRepository.getAll();
       return groupbase;
