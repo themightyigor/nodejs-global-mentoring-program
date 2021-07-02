@@ -1,6 +1,9 @@
+import jwt from 'jsonwebtoken';
+
 import { UserModel } from "../models/User.model";
 import { UsersRepository } from "../data-access/users.repository";
 import { NotFoundError } from "../errors/not-found.error";
+import config from "../config";
 
 export class UsersService {
     private usersRepository: UsersRepository;
@@ -69,4 +72,18 @@ export class UsersService {
             return suitedUsers;
         }
     }
+
+    public async authenticate(login: string, password: string): Promise<string> {
+        try {
+          await this.usersRepository.authenticate(login, password);
+          const payload = {
+            login,
+          };
+          const jwtSecret = config.jwtSecret as string;
+          const token = jwt.sign(payload, jwtSecret, { expiresIn: '1h' });
+          return token;
+        } catch(error) {
+          throw error;
+        }
+      }    
 }

@@ -1,4 +1,5 @@
 import express, { Application } from 'express';
+import cors from 'cors';
 
 import { usersRouter } from './controllers/users.controller';
 import { UsersRepository } from './data-access/users.repository';
@@ -14,13 +15,16 @@ import { requestInfoMiddleware } from './controllers/middlewares/request-info.mi
 import { unhandledErrorsMiddleware } from './controllers/middlewares/unhandled-errors.middleware';
 import { errorsHandlerMiddleware } from './controllers/middlewares/error-handler.middleware';
 import { errorLogger } from './loggers/error.logger';
+import { verifyTokenMiddleware } from './controllers/middlewares/verify-token.middleware';
 
 const app: Application = express();
 
 app.listen(1337);
 
 app.use(express.json());
+app.use(cors());
 app.use(requestInfoMiddleware);
+app.use(verifyTokenMiddleware);
 
 const usersRepository = new UsersRepository(User);
 const usersService = new UsersService(usersRepository);
