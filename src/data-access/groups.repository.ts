@@ -68,7 +68,7 @@ export class GroupsRepository {
       if (group !== null) {
         return group;
       } else {
-        throw new NotFoundError(`group with id ${id} wasn't found :c`);
+        throw new NotFoundError(`group with id ${id} wasn't found`);
       }
     } catch (error) {
       throw error;

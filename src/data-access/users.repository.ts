@@ -73,7 +73,7 @@ export class UsersRepository {
             if (user !== null) {
                 return user;
             } else {
-                throw new NotFoundError(`user with id ${id} wasn't found :c`);
+                throw new NotFoundError(`user with id ${id} wasn't found`);
             }
         } catch (error) {
             throw error;
@@ -82,21 +82,21 @@ export class UsersRepository {
 
     public async authenticate(login: string, password: string): Promise<User> {
         try {
-          const user: User | null = await this.usersTable.findOne({
-            where: {
-              login,
-            } as WhereOptions,
-          });
-          if (user === null) {
-            throw new NotFoundError(`User with login ${login} wasn't found`);
-          } else if (user.password !== password) {
-            throw new NotFoundError(`Wrong password`);
-          } else {
-            return user;
-          }    
-        } catch(error) {
-          throw error;
+            const user: User | null = await this.usersTable.findOne({
+                where: {
+                    login,
+                } as WhereOptions,
+            });
+            if (user === null) {
+                throw new NotFoundError(`User with login ${login} wasn't found`);
+            } else if (user.password !== password) {
+                throw new NotFoundError(`Wrong password`);
+            } else {
+                return user;
+            }
+        } catch (error) {
+            throw error;
         }
-      }    
+    }
 
 }

@@ -23,7 +23,7 @@ export const usersRouter = (app: Application,
             });
     }));
 
-    // @route    GET api/users/logiin
+    // @route    GET api/users/login
     // @desc     GET user's JWT Token
 
     router.get('/login', validateSchemaMiddleware(userValidator), wrapAsync(async (req: Request, res: Response) => {
