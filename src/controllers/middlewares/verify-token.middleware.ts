@@ -5,7 +5,7 @@ import { ForbiddenError } from '../../errors/forbidden.error';
 import config from '../../config';
 
 export const verifyTokenMiddleware = (req: Request, res: Response, next: NextFunction): void => {
-  if (req.url === '/userbase/login' && req.method === 'GET') {
+  if (req.url === '/users/login' && req.method === 'GET') {
     next();
     return;
   }
@@ -16,14 +16,14 @@ export const verifyTokenMiddleware = (req: Request, res: Response, next: NextFun
   if (token) {
     jwt.verify(token, jwtSecret, (error) => {
       if (error) {
-        const forbiddenError = new ForbiddenError('The token is not valid :c');
+        const forbiddenError = new ForbiddenError('The token is not valid');
         next(forbiddenError);
       } else {
         next();
       }
     })
   } else {
-    const unauthorizedError = new UnauthorizedError('You must provide authorization token :c');
+    const unauthorizedError = new UnauthorizedError('You must provide authorization token');
     next(unauthorizedError);
   }
-}; 
+};
